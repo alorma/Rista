@@ -64,6 +64,7 @@ public class PlacesPresenter {
 
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       placesRef = database.getReference(account.getUid() + "/places");
+      placesRef.keepSynced(true);
 
       placesRef.addValueEventListener(new ValueEventListener() {
         @Override
