@@ -17,7 +17,7 @@
       android:supportsRtl="true"
       android:theme="@style/AppTheme"
       >
-    <activity android:name=".PlacesActivity">
+    <activity android:name=".ui.activity.PlacesActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
 

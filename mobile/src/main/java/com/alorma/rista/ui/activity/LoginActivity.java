@@ -48,15 +48,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
 
-    mAuthListener = new FirebaseAuth.AuthStateListener() {
-      @Override
-      public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        if (user != null) {
-          Toast.makeText(LoginActivity.this, "Welcome: " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+    mAuthListener = firebaseAuth -> {
+      FirebaseUser user = firebaseAuth.getCurrentUser();
+      if (user != null) {
+        Toast.makeText(LoginActivity.this, "Welcome: " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
 
-          finish();
-        }
+        finish();
       }
     };
 
@@ -101,12 +98,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
   private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
     AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-    mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-      @Override
-      public void onComplete(@NonNull Task<AuthResult> task) {
-        if (!task.isSuccessful()) {
-          Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-        }
+    mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+      if (!task.isSuccessful()) {
+        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
       }
     });
   }

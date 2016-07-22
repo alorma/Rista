@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Rista</string>
+  <string name="place_photo_placeholder">Place Image</string>
 </resources>

@@ -6,7 +6,7 @@
     android:id="@+id/activity_places"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.alorma.rista.PlacesActivity"
+    tools:context="com.alorma.rista.ui.activity.PlacesActivity"
     >
 
   <android.support.design.widget.AppBarLayout
