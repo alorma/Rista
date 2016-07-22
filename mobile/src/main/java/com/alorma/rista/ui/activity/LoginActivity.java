@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
   private FirebaseAuth mAuth;
 
   private GoogleApiClient googleApiClient;
+  private FirebaseAuth.AuthStateListener mAuthListener;
 
   public static Intent createIntent(Context context) {
     return new Intent(context, LoginActivity.class);
@@ -45,13 +46,41 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             .requestEmail()
             .build();
 
-    googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this)
-        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-        .build();
+    googleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();
+
+    mAuthListener = new FirebaseAuth.AuthStateListener() {
+      @Override
+      public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+          Toast.makeText(LoginActivity.this, "Welcome: " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
+
+          finish();
+        }
+      }
+    };
 
     Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
     startActivityForResult(signInIntent, RC_SIGN_IN);
   }
+
+  // [START on_start_add_listener]
+  @Override
+  public void onStart() {
+    super.onStart();
+    mAuth.addAuthStateListener(mAuthListener);
+  }
+  // [END on_start_add_listener]
+
+  // [START on_stop_remove_listener]
+  @Override
+  public void onStop() {
+    super.onStop();
+    if (mAuthListener != null) {
+      mAuth.removeAuthStateListener(mAuthListener);
+    }
+  }
+  // [END on_stop_remove_listener]
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -77,13 +106,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
       public void onComplete(@NonNull Task<AuthResult> task) {
         if (!task.isSuccessful()) {
           Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-        } else {
-          FirebaseUser currentUser = mAuth.getCurrentUser();
-          if (currentUser != null) {
-            Toast.makeText(LoginActivity.this, "Welcome: " + currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
-
-            finish();
-          }
         }
       }
     });
