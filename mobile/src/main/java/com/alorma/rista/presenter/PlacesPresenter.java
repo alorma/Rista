@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -28,6 +29,7 @@ public class PlacesPresenter {
   private DatabaseReference placesRef;
   private PlacesCallback callback;
   private FoursquarePlaceMapper foursquarePlaceMapper;
+  private Map<String, FoursquarePlace> placesCache = new HashMap<>();
 
   public PlacesPresenter(String clientId, String clientSecret) {
     foursquarePlaceMapper = new FoursquarePlaceMapper();
@@ -66,7 +68,15 @@ public class PlacesPresenter {
       placesRef.addValueEventListener(new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-
+          HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
+          if (value != null) {
+            Map<String, FoursquarePlace> places = new HashMap<>();
+            for (String key : value.keySet()) {
+              FoursquarePlace place = foursquarePlaceMapper.fromMap((HashMap<String, Object>) value.get(key));
+              places.put(key, place);
+            }
+            placesCache = places;
+          }
         }
 
         @Override
@@ -75,11 +85,23 @@ public class PlacesPresenter {
         }
       });
 
-      interactor.getPlaces(41.3914706, 2.1352049)
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(this::places, this::error);
+      Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049);
+      execute(observable);
     }
+  }
+
+  private void execute(Observable<List<FoursquarePlace>> observable) {
+    observable.flatMap(Observable::from)
+        .map(this::checkExist)
+        .toList()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::places, this::error);
+  }
+
+  private FoursquarePlace checkExist(FoursquarePlace place) {
+    place.setFavorite(placesCache.containsKey(place.getVenue().getId()));
+    return place;
   }
 
   private void places(List<FoursquarePlace> foursquarePlaces) {
@@ -94,10 +116,8 @@ public class PlacesPresenter {
 
   public void loadMore(int itemCount, PlacesCallback callback) {
     this.callback = callback;
-    interactor.getPlaces(41.3914706, 2.1352049, itemCount)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::places, this::error);
+    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049, itemCount);
+    execute(observable);
   }
 
   public void savePlace(FoursquarePlace foursquarePlace) {
