@@ -12,6 +12,9 @@ android {
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
   buildTypes {
+    debug {
+      applicationIdSuffix ".debug"
+    }
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -20,7 +23,7 @@ android {
 }
 
 dependencies {
-  wearApp project(':wear')
+  //wearApp project(':wear')
 
   def supportLibVersion = '24.0.0'
   compile "com.android.support:design:$supportLibVersion"
@@ -37,4 +40,8 @@ dependencies {
   compile "com.google.firebase:firebase-invites:$firebaseVersion"
   compile "com.google.firebase:firebase-messaging:$firebaseVersion"
   compile "com.google.firebase:firebase-crash:$firebaseVersion"
+  compile "com.google.firebase:firebase-auth:$firebaseVersion"
+  compile "com.google.android.gms:play-services-auth:$firebaseVersion"
 }
+
+apply plugin: 'com.google.gms.google-services'

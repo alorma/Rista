@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "29441334239",
+    "firebase_url": "https://rista-c2af6.firebaseio.com",
+    "project_id": "rista-c2af6",
+    "storage_bucket": "rista-c2af6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29441334239:android:f4d80a429298a93a",
+        "android_client_info": {
+          "package_name": "com.alorma.rista.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29441334239-3i1sfe8hn5i1jgk5lknbmhpmoolo7uti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alorma.rista.debug",
+            "certificate_hash": "21BA6FA2EAB8A1BA9C403BC31A025C486E6E80C5"
+          }
+        },
+        {
+          "client_id": "29441334239-s8n2mb0miarnjjluj2nm16eguqlqfj31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXdi_QgpBx5Qm0xfuENFNwi3wTxMw8vV4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "29441334239-s8n2mb0miarnjjluj2nm16eguqlqfj31.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
