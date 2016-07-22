@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class PlacesActivity extends AppCompatActivity implements PlacesPresenter.PlacesCallback,
-    RecyclerArrayAdapter.RecyclerAdapterContentListener {
+    RecyclerArrayAdapter.RecyclerAdapterContentListener, RecyclerArrayAdapter.ItemCallback<FoursquarePlace> {
 
   private PlacesPresenter placesPresenter;
   private PlacesAdapter placesAdapter;
@@ -34,6 +34,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
     placesAdapter = new PlacesAdapter(Glide.with(this), getLayoutInflater());
+    placesAdapter.setCallback(this);
     placesAdapter.setRecyclerAdapterContentListener(this);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -60,5 +61,10 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
   @Override
   public void loadMoreItems() {
     placesPresenter.loadMore(placesAdapter.getItemCount(), this);
+  }
+
+  @Override
+  public void onItemSelected(FoursquarePlace item) {
+    placesPresenter.savePlace(item);
   }
 }

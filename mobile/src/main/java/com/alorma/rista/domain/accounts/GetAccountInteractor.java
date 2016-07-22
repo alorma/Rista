@@ -12,6 +12,7 @@ public class GetAccountInteractor {
       appAccount.setName(currentUser.getDisplayName());
       appAccount.setEmail(currentUser.getEmail());
       appAccount.setPhoto(currentUser.getPhotoUrl());
+      appAccount.setUid(currentUser.getUid());
       return appAccount;
     }
     return null;

@@ -40,6 +40,12 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
       super(itemView);
 
       imageView = (ImageView) itemView.findViewById(R.id.image);
+
+      itemView.setOnClickListener(view -> {
+        if (getCallback() != null) {
+          getCallback().onItemSelected(getItem(getAdapterPosition()));
+        }
+      });
     }
   }
 }

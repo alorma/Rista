@@ -6,6 +6,7 @@ public class AppAccount {
   private String name;
   private String email;
   private Uri photo;
+  private String uid;
 
   public void setName(String name) {
     this.name = name;
@@ -29,5 +30,13 @@ public class AppAccount {
 
   public Uri getPhoto() {
     return photo;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getUid() {
+    return uid;
   }
 }

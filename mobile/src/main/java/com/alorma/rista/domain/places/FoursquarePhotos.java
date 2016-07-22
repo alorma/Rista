@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class FoursquarePhotos {
+  public FoursquarePhotos() {
+  }
 
   @SerializedName("count") private int count;
   @SerializedName("groups") private List<Group> groups;
@@ -17,6 +19,9 @@ public class FoursquarePhotos {
   }
 
   public class Group {
+    public Group() {
+    }
+
     @SerializedName("type") private String type;
     @SerializedName("name") private String name;
     @SerializedName("count") private int count;
@@ -44,6 +49,9 @@ public class FoursquarePhotos {
       @SerializedName("suffix") private String suffix;
       @SerializedName("width") private int width;
       @SerializedName("height") private int height;
+
+      public Item() {
+      }
 
       public String getId() {
         return id;
