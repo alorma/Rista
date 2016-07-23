@@ -18,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -80,6 +81,7 @@ public class PlacesPresenter {
               callback.updateFavorites(placesCache);
             }
           } else {
+            placesCache = new HashMap<>();
             if (callback != null) {
               callback.updateFavorites(new HashMap<>());
             }
@@ -127,13 +129,18 @@ public class PlacesPresenter {
     execute(observable);
   }
 
-  public void savePlace(FoursquarePlace foursquarePlace) {
-    Map<String, Object> map = foursquarePlaceMapper.toMap(foursquarePlace);
+  public void onItemSelected(FoursquarePlace foursquarePlace) {
+    Set<String> set = placesCache.keySet();
+    if (set.contains(foursquarePlace.getVenue().getId())) {
+      placesRef.child(foursquarePlace.getVenue().getId()).removeValue();
+    } else {
+      Map<String, Object> map = foursquarePlaceMapper.toMap(foursquarePlace);
 
-    Map<String, Object> childUpdates = new HashMap<>();
-    childUpdates.put(foursquarePlace.getVenue().getId(), map);
+      Map<String, Object> childUpdates = new HashMap<>();
+      childUpdates.put(foursquarePlace.getVenue().getId(), map);
 
-    placesRef.updateChildren(childUpdates);
+      placesRef.updateChildren(childUpdates);
+    }
   }
 
   public interface PlacesCallback {

@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import com.alorma.rista.R;
 import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.presenter.PlacesPresenter;
-import com.alorma.rista.ui.activity.LoginActivity;
 import com.alorma.rista.ui.adapter.PlacesAdapter;
 import com.alorma.rista.ui.adapter.RecyclerArrayAdapter;
 import com.bumptech.glide.Glide;
@@ -66,7 +65,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
 
   @Override
   public void onItemSelected(FoursquarePlace item) {
-    placesPresenter.savePlace(item);
+    placesPresenter.onItemSelected(item);
   }
 
   @Override

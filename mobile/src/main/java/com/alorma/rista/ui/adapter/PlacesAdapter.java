@@ -68,10 +68,8 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
       textView = (TextView) itemView.findViewById(R.id.text);
 
       favorite.setEventListener((button, buttonState) -> {
-        if (buttonState) {
-          if (getCallback() != null) {
-            getCallback().onItemSelected(getItem(getAdapterPosition()));
-          }
+        if (getCallback() != null) {
+          getCallback().onItemSelected(getItem(getAdapterPosition()));
         }
       });
     }

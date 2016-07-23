@@ -10,30 +10,26 @@
                                     android:id="@+id/cardView"
                                     android:foreground="?selectableItemBackground"
     >
-  <LinearLayout
+  <ImageView
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      >
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:id="@+id/image"
-        android:contentDescription="@string/place_photo_placeholder"
-        android:scaleType="fitXY"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:textStyle="bold"
-        android:id="@+id/text"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        tools:text="Text long long text because it can be opaque"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="56dp"
-        />
-  </LinearLayout>
+      android:layout_height="180dp"
+      android:id="@+id/image"
+      android:contentDescription="@string/place_photo_placeholder"
+      android:scaleType="fitXY"
+      android:layout_marginBottom="56dp"
+      />
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="56dp"
+      android:textStyle="bold"
+      android:id="@+id/text"
+      android:paddingStart="8dp"
+      android:paddingEnd="8dp"
+      tools:text="Text long long text because it can be opaque"
+      android:gravity="center_vertical"
+      android:layout_marginEnd="56dp"
+      android:layout_gravity="bottom"
+      />
 
   <com.varunest.sparkbutton.SparkButton
       android:layout_width="56dp"
