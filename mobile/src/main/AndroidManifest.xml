@@ -24,8 +24,11 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-
     <activity android:name=".ui.activity.LoginActivity"/>
+    <activity
+        android:name=".ui.activity.RestaurantActivity"
+        android:label="@string/title_activity_restaurant"
+        />
   </application>
 
 </manifest>

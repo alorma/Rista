@@ -1,4 +1,7 @@
 <resources>
   <string name="app_name">Rista</string>
   <string name="place_photo_placeholder">Place Image</string>
+  <string name="title_activity_restaurant">RestaurantActivity</string>
+  <string name="transition_restaurant_photo">restaurant_photo</string>
+  <string name="action_settings">Settings</string>
 </resources>

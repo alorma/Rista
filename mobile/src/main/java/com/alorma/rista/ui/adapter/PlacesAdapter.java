@@ -13,6 +13,7 @@ import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.ui.utils.FoursquarePhotosHelper;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.varunest.sparkbutton.SparkButton;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   private final FoursquarePhotosHelper foursquarePhotosHelper;
   private RequestManager glide;
   private Set<String> favorites;
+  private AdapterCallback adapterCallback;
 
   public PlacesAdapter(RequestManager glide, LayoutInflater inflater) {
     super(inflater);
@@ -37,10 +39,17 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
     Uri uri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
     Uri thumbnailUri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
 
-    DrawableRequestBuilder<Uri> color = glide.load(thumbnailUri).override(1, 1);
-    DrawableRequestBuilder<Uri> thumbnail = glide.load(thumbnailUri).thumbnail(color);
+    DrawableRequestBuilder<Uri> color =
+        glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(1, 1);
+    DrawableRequestBuilder<Uri> thumbnail =
+        glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).thumbnail(color);
 
-    glide.load(uri).thumbnail(thumbnail).crossFade().centerCrop().into(holder.imageView);
+    glide.load(uri)
+        .skipMemoryCache(true)
+        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+        .thumbnail(thumbnail)
+        .crossFade()
+        .into(holder.imageView);
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
     if (favorites != null) {
@@ -52,6 +61,10 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   public void setFavorites(Set<String> favorites) {
     this.favorites = favorites;
     notifyDataSetChanged();
+  }
+
+  public void setAdapterCallback(AdapterCallback adapterCallback) {
+    this.adapterCallback = adapterCallback;
   }
 
   public class PlaceHolder extends RecyclerView.ViewHolder {
@@ -69,10 +82,23 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
       textView = (TextView) itemView.findViewById(R.id.text);
 
       favorite.setEventListener((button, buttonState) -> {
-        if (getCallback() != null) {
-          getCallback().onItemSelected(getItem(getAdapterPosition()));
+        if (adapterCallback != null) {
+          adapterCallback.onFavCallback(getItem(getAdapterPosition()));
+        }
+      });
+
+      itemView.setOnClickListener(view -> {
+        if (adapterCallback != null) {
+          FoursquarePlace item = getItem(getAdapterPosition());
+          adapterCallback.onItemSelected(item, imageView);
         }
       });
     }
+  }
+
+  public interface AdapterCallback {
+    void onItemSelected(FoursquarePlace place, View transitionView);
+
+    void onFavCallback(FoursquarePlace place);
   }
 }

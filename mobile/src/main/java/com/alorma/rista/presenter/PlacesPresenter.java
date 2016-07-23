@@ -129,7 +129,7 @@ public class PlacesPresenter {
     execute(observable);
   }
 
-  public void onItemSelected(FoursquarePlace foursquarePlace) {
+  public void onFAvItem(FoursquarePlace foursquarePlace) {
     Set<String> set = placesCache.keySet();
     if (set.contains(foursquarePlace.getVenue().getId())) {
       placesRef.child(foursquarePlace.getVenue().getId()).removeValue();

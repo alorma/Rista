@@ -15,8 +15,10 @@
       android:layout_height="180dp"
       android:id="@+id/image"
       android:contentDescription="@string/place_photo_placeholder"
-      android:scaleType="fitXY"
+      android:scaleType="centerCrop"
       android:layout_marginBottom="56dp"
+      android:src="@color/grey"
+      android:transitionName="@string/transition_restaurant_photo"
       />
   <TextView
       android:layout_width="match_parent"
