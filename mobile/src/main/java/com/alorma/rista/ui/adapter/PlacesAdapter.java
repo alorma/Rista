@@ -44,7 +44,8 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
     if (favorites != null) {
-      holder.favorite.setChecked(favorites.contains(foursquarePlace.getVenue().getId()));
+      boolean state = favorites.contains(foursquarePlace.getVenue().getId());
+      holder.favorite.setChecked(state);
     }
   }
 

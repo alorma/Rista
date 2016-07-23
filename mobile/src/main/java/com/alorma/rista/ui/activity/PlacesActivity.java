@@ -3,7 +3,7 @@ package com.alorma.rista.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import com.alorma.rista.R;
@@ -15,8 +15,9 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 import java.util.Map;
 
-public class PlacesActivity extends AppCompatActivity implements PlacesPresenter.PlacesCallback,
-    RecyclerArrayAdapter.RecyclerAdapterContentListener, RecyclerArrayAdapter.ItemCallback<FoursquarePlace> {
+public class PlacesActivity extends AppCompatActivity
+    implements PlacesPresenter.PlacesCallback, RecyclerArrayAdapter.RecyclerAdapterContentListener,
+    RecyclerArrayAdapter.ItemCallback<FoursquarePlace> {
 
   private PlacesPresenter placesPresenter;
   private PlacesAdapter placesAdapter;
@@ -37,7 +38,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
     placesAdapter.setCallback(this);
     placesAdapter.setRecyclerAdapterContentListener(this);
 
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    recyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.places_columns)));
     recyclerView.setAdapter(placesAdapter);
   }
 
