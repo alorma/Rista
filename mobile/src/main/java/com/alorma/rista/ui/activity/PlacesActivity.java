@@ -3,6 +3,7 @@ package com.alorma.rista.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import com.alorma.rista.ui.adapter.PlacesAdapter;
 import com.alorma.rista.ui.adapter.RecyclerArrayAdapter;
 import com.bumptech.glide.Glide;
 import java.util.List;
+import java.util.Map;
 
 public class PlacesActivity extends AppCompatActivity implements PlacesPresenter.PlacesCallback,
     RecyclerArrayAdapter.RecyclerAdapterContentListener, RecyclerArrayAdapter.ItemCallback<FoursquarePlace> {
@@ -37,7 +39,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
     placesAdapter.setCallback(this);
     placesAdapter.setRecyclerAdapterContentListener(this);
 
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     recyclerView.setAdapter(placesAdapter);
   }
 
@@ -66,5 +68,10 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
   @Override
   public void onItemSelected(FoursquarePlace item) {
     placesPresenter.savePlace(item);
+  }
+
+  @Override
+  public void updateFavorites(Map<String, FoursquarePlace> placesCache) {
+    placesAdapter.setFavorites(placesCache.keySet());
   }
 }

@@ -12,11 +12,14 @@ import android.widget.TextView;
 import com.alorma.rista.R;
 import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.ui.utils.FoursquarePhotosHelper;
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.RequestManager;
+import java.util.Set;
 
 public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesAdapter.PlaceHolder> {
   private final FoursquarePhotosHelper foursquarePhotosHelper;
   private RequestManager glide;
+  private Set<String> favorites;
 
   public PlacesAdapter(RequestManager glide, LayoutInflater inflater) {
     super(inflater);
@@ -32,11 +35,26 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   @Override
   protected void onBindViewHolder(PlaceHolder holder, FoursquarePlace foursquarePlace) {
     Uri uri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
+    Uri thumbnailUri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
 
-    glide.load(uri).crossFade().centerCrop().into(holder.imageView);
+    DrawableRequestBuilder<Uri> color = glide.load(thumbnailUri).override(1, 1);
+    DrawableRequestBuilder<Uri> thumbnail = glide.load(thumbnailUri).thumbnail(color);
+
+    glide.load(uri)
+        .thumbnail(thumbnail)
+        .crossFade()
+        .centerCrop()
+        .into(holder.imageView);
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
-    holder.cardView.setCardBackgroundColor(foursquarePlace.isFavorite() ? Color.LTGRAY : Color.WHITE);
+    if (favorites != null) {
+      holder.cardView.setCardBackgroundColor(favorites.contains(foursquarePlace.getVenue().getId()) ? Color.LTGRAY : Color.WHITE);
+    }
+  }
+
+  public void setFavorites(Set<String> favorites) {
+    this.favorites = favorites;
+    notifyDataSetChanged();
   }
 
   public class PlaceHolder extends RecyclerView.ViewHolder {

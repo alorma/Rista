@@ -61,7 +61,6 @@ public class PlacesPresenter {
         callback.requestUserLogin();
       }
     } else {
-
       FirebaseDatabase database = FirebaseDatabase.getInstance();
       placesRef = database.getReference(account.getUid() + "/places");
       placesRef.keepSynced(true);
@@ -77,6 +76,9 @@ public class PlacesPresenter {
               places.put(key, place);
             }
             placesCache = places;
+            if (callback != null) {
+              callback.updateFavorites(placesCache);
+            }
           }
         }
 
@@ -134,5 +136,7 @@ public class PlacesPresenter {
     void requestUserLogin();
 
     void onPlacesLoaded(List<FoursquarePlace> foursquarePlaces);
+
+    void updateFavorites(Map<String, FoursquarePlace> placesCache);
   }
 }
