@@ -1,6 +1,5 @@
 package com.alorma.rista.ui.adapter;
 
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +13,7 @@ import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.ui.utils.FoursquarePhotosHelper;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.RequestManager;
+import com.varunest.sparkbutton.SparkButton;
 import java.util.Set;
 
 public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesAdapter.PlaceHolder> {
@@ -40,15 +40,11 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
     DrawableRequestBuilder<Uri> color = glide.load(thumbnailUri).override(1, 1);
     DrawableRequestBuilder<Uri> thumbnail = glide.load(thumbnailUri).thumbnail(color);
 
-    glide.load(uri)
-        .thumbnail(thumbnail)
-        .crossFade()
-        .centerCrop()
-        .into(holder.imageView);
+    glide.load(uri).thumbnail(thumbnail).crossFade().centerCrop().into(holder.imageView);
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
     if (favorites != null) {
-      holder.cardView.setCardBackgroundColor(favorites.contains(foursquarePlace.getVenue().getId()) ? Color.LTGRAY : Color.WHITE);
+      holder.favorite.setChecked(favorites.contains(foursquarePlace.getVenue().getId()));
     }
   }
 
@@ -60,6 +56,7 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   public class PlaceHolder extends RecyclerView.ViewHolder {
     CardView cardView;
     ImageView imageView;
+    SparkButton favorite;
     TextView textView;
 
     public PlaceHolder(View itemView) {
@@ -67,11 +64,14 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
 
       cardView = (CardView) itemView.findViewById(R.id.cardView);
       imageView = (ImageView) itemView.findViewById(R.id.image);
+      favorite = (SparkButton) itemView.findViewById(R.id.favorite);
       textView = (TextView) itemView.findViewById(R.id.text);
 
-      itemView.setOnClickListener(view -> {
-        if (getCallback() != null) {
-          getCallback().onItemSelected(getItem(getAdapterPosition()));
+      favorite.setEventListener((button, buttonState) -> {
+        if (buttonState) {
+          if (getCallback() != null) {
+            getCallback().onItemSelected(getItem(getAdapterPosition()));
+          }
         }
       });
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
                                     android:orientation="vertical"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
@@ -11,10 +12,9 @@
     >
   <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
       >
-
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="180dp"
@@ -22,15 +22,29 @@
         android:contentDescription="@string/place_photo_placeholder"
         android:scaleType="fitXY"
         />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:textStyle="bold"
         android:id="@+id/text"
-        android:paddingLeft="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        tools:text="Text long long text because it can be opaque"
         android:gravity="center_vertical"
+        android:layout_marginEnd="56dp"
         />
   </LinearLayout>
+
+  <com.varunest.sparkbutton.SparkButton
+      android:layout_width="56dp"
+      android:layout_height="56dp"
+      app:sparkbutton_activeImage="@drawable/favorite_places_on"
+      app:sparkbutton_inActiveImage="@drawable/favorite_places_off"
+      app:sparkbutton_primaryColor="?colorAccent"
+      app:sparkbutton_secondaryColor="@color/grey"
+      android:layout_gravity="bottom|end"
+      app:sparkbutton_iconSize="20dp"
+      android:id="@+id/favorite"
+      />
 
 </android.support.v7.widget.CardView>

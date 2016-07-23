@@ -3,7 +3,6 @@ package com.alorma.rista.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +38,7 @@ public class PlacesActivity extends AppCompatActivity implements PlacesPresenter
     placesAdapter.setCallback(this);
     placesAdapter.setRecyclerAdapterContentListener(this);
 
-    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(placesAdapter);
   }
 

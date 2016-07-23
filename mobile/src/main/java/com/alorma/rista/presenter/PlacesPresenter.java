@@ -79,6 +79,10 @@ public class PlacesPresenter {
             if (callback != null) {
               callback.updateFavorites(placesCache);
             }
+          } else {
+            if (callback != null) {
+              callback.updateFavorites(new HashMap<>());
+            }
           }
         }
 
