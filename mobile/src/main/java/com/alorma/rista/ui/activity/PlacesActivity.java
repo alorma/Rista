@@ -1,15 +1,19 @@
 package com.alorma.rista.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 import com.alorma.rista.R;
 import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.presenter.PlacesPresenter;
@@ -23,6 +27,7 @@ import java.util.Map;
 public class PlacesActivity extends AppCompatActivity
     implements PlacesPresenter.PlacesCallback, RecyclerArrayAdapter.RecyclerAdapterContentListener, PlacesAdapter.AdapterCallback {
 
+  private static final int LOCATION_PERMISSION_REQUEST = 1121;
   private PlacesPresenter placesPresenter;
   private PlacesAdapter placesAdapter;
 
@@ -59,6 +64,34 @@ public class PlacesActivity extends AppCompatActivity
   }
 
   @Override
+  public boolean checkPermission() {
+    return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+  }
+
+  @Override
+  public void requestPermission() {
+    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_CONTACTS)) {
+      Toast.makeText(this, "Hey! Locate me!", Toast.LENGTH_SHORT).show();
+    }
+    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, LOCATION_PERMISSION_REQUEST);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    switch (requestCode) {
+      case LOCATION_PERMISSION_REQUEST: {
+        // If request is cancelled, the result arrays are empty.
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          placesPresenter.load(this);
+        } else {
+          Toast.makeText(this, "Oh :( I can't load places", Toast.LENGTH_SHORT).show();
+        }
+        return;
+      }
+    }
+  }
+
+  @Override
   public void onPlacesLoaded(List<FoursquarePlace> foursquarePlaces) {
     placesAdapter.addAll(foursquarePlaces);
   }
@@ -74,12 +107,12 @@ public class PlacesActivity extends AppCompatActivity
   }
 
   @Override
-  public void onItemSelected(FoursquarePlace place, View transitionView) {
+  public void onItemSelected(FoursquarePlace place, View imageTransitionView, View textTransitionView) {
     Uri uri = new FoursquarePhotosHelper().buildPhoto(place.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
     Intent intent = RestaurantActivity.createIntent(this, place.getVenue().getId(), place.getVenue().getName(), uri.toString());
 
     ActivityOptionsCompat options = ActivityOptionsCompat.
-        makeSceneTransitionAnimation(this, transitionView, getString(R.string.transition_restaurant_photo));
+        makeSceneTransitionAnimation(this, imageTransitionView, getString(R.string.transition_restaurant_photo));
 
     ActivityCompat.startActivity(this, intent, options.toBundle());
   }

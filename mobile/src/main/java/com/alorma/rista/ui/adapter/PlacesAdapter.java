@@ -37,7 +37,7 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   @Override
   protected void onBindViewHolder(PlaceHolder holder, FoursquarePlace foursquarePlace) {
     Uri uri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
-    Uri thumbnailUri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
+    Uri thumbnailUri = foursquarePhotosHelper.buildThumbnailPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
 
     DrawableRequestBuilder<Uri> color =
         glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(1, 1);
@@ -90,14 +90,14 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
       itemView.setOnClickListener(view -> {
         if (adapterCallback != null) {
           FoursquarePlace item = getItem(getAdapterPosition());
-          adapterCallback.onItemSelected(item, imageView);
+          adapterCallback.onItemSelected(item, imageView, textView);
         }
       });
     }
   }
 
   public interface AdapterCallback {
-    void onItemSelected(FoursquarePlace place, View transitionView);
+    void onItemSelected(FoursquarePlace place, View imageTransitionView, View textTransitionView);
 
     void onFavCallback(FoursquarePlace place);
   }

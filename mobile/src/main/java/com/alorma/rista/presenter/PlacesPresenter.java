@@ -62,41 +62,51 @@ public class PlacesPresenter {
         callback.requestUserLogin();
       }
     } else {
-      FirebaseDatabase database = FirebaseDatabase.getInstance();
-      placesRef = database.getReference(account.getUid() + "/places");
-      placesRef.keepSynced(true);
+      if (callback != null) {
+        if (callback.checkPermission()) {
+          loadPlaces(callback, account);
+        } else {
+          callback.requestPermission();
+        }
+      }
+    }
+  }
 
-      placesRef.addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-          HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
-          if (value != null) {
-            Map<String, FoursquarePlace> places = new HashMap<>();
-            for (String key : value.keySet()) {
-              FoursquarePlace place = foursquarePlaceMapper.fromMap((HashMap<String, Object>) value.get(key));
-              places.put(key, place);
-            }
-            placesCache = places;
-            if (callback != null) {
-              callback.updateFavorites(placesCache);
-            }
-          } else {
-            placesCache = new HashMap<>();
-            if (callback != null) {
-              callback.updateFavorites(new HashMap<>());
-            }
+  private void loadPlaces(final PlacesCallback callback, AppAccount account) {
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    placesRef = database.getReference(account.getUid() + "/places");
+    placesRef.keepSynced(true);
+
+    placesRef.addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        HashMap<String, Object> value = (HashMap<String, Object>) dataSnapshot.getValue();
+        if (value != null) {
+          Map<String, FoursquarePlace> places = new HashMap<>();
+          for (String key : value.keySet()) {
+            FoursquarePlace place = foursquarePlaceMapper.fromMap((HashMap<String, Object>) value.get(key));
+            places.put(key, place);
+          }
+          placesCache = places;
+          if (callback != null) {
+            callback.updateFavorites(placesCache);
+          }
+        } else {
+          placesCache = new HashMap<>();
+          if (callback != null) {
+            callback.updateFavorites(new HashMap<>());
           }
         }
+      }
 
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
+      @Override
+      public void onCancelled(DatabaseError databaseError) {
 
-        }
-      });
+      }
+    });
 
-      Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049);
-      execute(observable);
-    }
+    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049);
+    execute(observable);
   }
 
   private void execute(Observable<List<FoursquarePlace>> observable) {
@@ -149,5 +159,9 @@ public class PlacesPresenter {
     void onPlacesLoaded(List<FoursquarePlace> foursquarePlaces);
 
     void updateFavorites(Map<String, FoursquarePlace> placesCache);
+
+    boolean checkPermission();
+
+    void requestPermission();
   }
 }

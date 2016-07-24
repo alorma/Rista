@@ -8,7 +8,7 @@ public class FoursquarePhotosHelper {
   public Uri buildPhoto(FoursquarePhotos.Group.Item item) {
     return Uri.parse(item.getPrefix())
         .buildUpon()
-        .appendPath(item.getHeight() + "x" + item.getWidth())
+        .appendPath("600x600")
         .appendEncodedPath(item.getSuffix().substring(1, item.getSuffix().length()))
         .build();
   }
