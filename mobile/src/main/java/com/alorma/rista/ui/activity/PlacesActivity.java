@@ -53,11 +53,7 @@ public class PlacesActivity extends AppCompatActivity
 
     recyclerView.setLayoutManager(new GridLayoutManager(this, getResources().getInteger(R.integer.places_columns)));
     recyclerView.setAdapter(placesAdapter);
-  }
 
-  @Override
-  protected void onStart() {
-    super.onStart();
     placesPresenter.load(this);
   }
 
@@ -122,7 +118,6 @@ public class PlacesActivity extends AppCompatActivity
       return;
     }
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
 
     placesPresenter.changeLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
   }
