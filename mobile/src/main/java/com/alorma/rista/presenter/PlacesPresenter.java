@@ -1,5 +1,6 @@
 package com.alorma.rista.presenter;
 
+import android.location.Location;
 import com.alorma.rista.domain.accounts.AppAccount;
 import com.alorma.rista.domain.accounts.GetAccountInteractor;
 import com.alorma.rista.domain.base.CredentialsProvider;
@@ -31,6 +32,7 @@ public class PlacesPresenter {
   private PlacesCallback callback;
   private FoursquarePlaceMapper foursquarePlaceMapper;
   private Map<String, FoursquarePlace> placesCache = new HashMap<>();
+  private Location location;
 
   public PlacesPresenter(String clientId, String clientSecret) {
     foursquarePlaceMapper = new FoursquarePlaceMapper();
@@ -64,7 +66,10 @@ public class PlacesPresenter {
     } else {
       if (callback != null) {
         if (callback.checkPermission()) {
-          loadPlaces(callback, account);
+          if (location != null) {
+            loadFavorites(account);
+            loadPlaces(callback, account, location);
+          }
         } else {
           callback.requestPermission();
         }
@@ -72,7 +77,7 @@ public class PlacesPresenter {
     }
   }
 
-  private void loadPlaces(final PlacesCallback callback, AppAccount account) {
+  private void loadFavorites(AppAccount account) {
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     placesRef = database.getReference(account.getUid() + "/places");
     placesRef.keepSynced(true);
@@ -104,8 +109,10 @@ public class PlacesPresenter {
 
       }
     });
+  }
 
-    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049);
+  private void loadPlaces(final PlacesCallback callback, AppAccount account, Location location) {
+    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(location.getLatitude(), location.getLongitude());
     execute(observable);
   }
 
@@ -135,7 +142,7 @@ public class PlacesPresenter {
 
   public void loadMore(int itemCount, PlacesCallback callback) {
     this.callback = callback;
-    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(41.3914706, 2.1352049, itemCount);
+    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(location.getLatitude(), location.getLongitude(), itemCount);
     execute(observable);
   }
 
