@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,14 +57,17 @@ public class PlacesActivity extends AppCompatActivity
   }
 
   @Override
-  public void requestUserLogin() {
-    Intent intent = LoginActivity.createIntent(this);
-    startActivity(intent);
+  protected void onStart() {
+    super.onStart();
+    if (placesAdapter.getItemCount() == 0) {
+      placesPresenter.load(this);
+    }
   }
 
   @Override
-  public boolean checkPermission() {
-    return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+  public void requestUserLogin() {
+    Intent intent = LoginActivity.createIntent(this);
+    startActivity(intent);
   }
 
   @Override
@@ -100,6 +102,10 @@ public class PlacesActivity extends AppCompatActivity
     LocationListener locationListener = new LocationListener() {
       public void onLocationChanged(Location location) {
         placesPresenter.changeLocation(location);
+        if (!checkPermission()) {
+          return;
+        }
+        locationManager.removeUpdates(this);
       }
 
       public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -113,13 +119,22 @@ public class PlacesActivity extends AppCompatActivity
     };
 
     // Register the listener with the Location Manager to receive location updates
-    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    if (!checkPermission()) {
       return;
     }
     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-    placesPresenter.changeLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+    Location loca = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    placesPresenter.changeLocation(loca);
+    if (loca != null) {
+      locationManager.removeUpdates(locationListener);
+    }
+  }
+
+  @Override
+  public boolean checkPermission() {
+    return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
   }
 
   @Override
