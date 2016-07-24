@@ -37,19 +37,12 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   @Override
   protected void onBindViewHolder(PlaceHolder holder, FoursquarePlace foursquarePlace) {
     Uri uri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
-    Uri thumbnailUri = foursquarePhotosHelper.buildThumbnailPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
+    Uri thumbnailUri =
+        foursquarePhotosHelper.buildThumbnailPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
 
-    DrawableRequestBuilder<Uri> color =
-        glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).override(1, 1);
-    DrawableRequestBuilder<Uri> thumbnail =
-        glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).thumbnail(color);
+    DrawableRequestBuilder<Uri> thumbnail = glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE);
 
-    glide.load(uri)
-        .skipMemoryCache(true)
-        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-        .thumbnail(thumbnail)
-        .crossFade()
-        .into(holder.imageView);
+    glide.load(uri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).thumbnail(thumbnail).into(holder.imageView);
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
     if (favorites != null) {

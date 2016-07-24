@@ -1,8 +1,12 @@
 package com.alorma.rista.ui.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -92,6 +96,38 @@ public class PlacesActivity extends AppCompatActivity
   }
 
   @Override
+  public void requestLocation() {
+    // Acquire a reference to the system Location Manager
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+    // Define a listener that responds to location updates
+    LocationListener locationListener = new LocationListener() {
+      public void onLocationChanged(Location location) {
+        placesPresenter.changeLocation(location);
+      }
+
+      public void onStatusChanged(String provider, int status, Bundle extras) {
+      }
+
+      public void onProviderEnabled(String provider) {
+      }
+
+      public void onProviderDisabled(String provider) {
+      }
+    };
+
+    // Register the listener with the Location Manager to receive location updates
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      return;
+    }
+    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
+
+    placesPresenter.changeLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+  }
+
+  @Override
   public void onPlacesLoaded(List<FoursquarePlace> foursquarePlaces) {
     placesAdapter.addAll(foursquarePlaces);
   }
@@ -119,6 +155,6 @@ public class PlacesActivity extends AppCompatActivity
 
   @Override
   public void onFavCallback(FoursquarePlace place) {
-    placesPresenter.onFAvItem(place);
+    placesPresenter.onFavItem(place);
   }
 }

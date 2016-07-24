@@ -33,6 +33,7 @@ public class PlacesPresenter {
   private FoursquarePlaceMapper foursquarePlaceMapper;
   private Map<String, FoursquarePlace> placesCache = new HashMap<>();
   private Location location;
+  private boolean loaded;
 
   public PlacesPresenter(String clientId, String clientSecret) {
     foursquarePlaceMapper = new FoursquarePlaceMapper();
@@ -68,7 +69,9 @@ public class PlacesPresenter {
         if (callback.checkPermission()) {
           if (location != null) {
             loadFavorites(account);
-            loadPlaces(callback, account, location);
+            loadPlaces(location);
+          } else {
+            callback.requestLocation();
           }
         } else {
           callback.requestPermission();
@@ -111,8 +114,9 @@ public class PlacesPresenter {
     });
   }
 
-  private void loadPlaces(final PlacesCallback callback, AppAccount account, Location location) {
-    Observable<List<FoursquarePlace>> observable = interactor.getPlaces(location.getLatitude(), location.getLongitude());
+  private void loadPlaces(Location location) {
+    Observable<List<FoursquarePlace>> observable =
+        interactor.getPlaces(location.getLatitude(), location.getLongitude()).doOnSubscribe(() -> loaded = false);
     execute(observable);
   }
 
@@ -122,6 +126,7 @@ public class PlacesPresenter {
         .toList()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
+        .doOnNext(foursquarePlaces -> loaded = true)
         .subscribe(this::places, this::error);
   }
 
@@ -146,7 +151,7 @@ public class PlacesPresenter {
     execute(observable);
   }
 
-  public void onFAvItem(FoursquarePlace foursquarePlace) {
+  public void onFavItem(FoursquarePlace foursquarePlace) {
     Set<String> set = placesCache.keySet();
     if (set.contains(foursquarePlace.getVenue().getId())) {
       placesRef.child(foursquarePlace.getVenue().getId()).removeValue();
@@ -160,6 +165,13 @@ public class PlacesPresenter {
     }
   }
 
+  public void changeLocation(Location location) {
+    if (!loaded && location != null) {
+      this.location = location;
+      load(callback);
+    }
+  }
+
   public interface PlacesCallback {
     void requestUserLogin();
 
@@ -170,5 +182,7 @@ public class PlacesPresenter {
     boolean checkPermission();
 
     void requestPermission();
+
+    void requestLocation();
   }
 }
