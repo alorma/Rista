@@ -12,12 +12,4 @@ public class FoursquarePhotosHelper {
         .appendEncodedPath(item.getSuffix().substring(1, item.getSuffix().length()))
         .build();
   }
-
-  public Uri buildThumbnailPhoto(FoursquarePhotos.Group.Item item) {
-    return Uri.parse(item.getPrefix())
-        .buildUpon()
-        .appendPath("100x100")
-        .appendEncodedPath(item.getSuffix().substring(1, item.getSuffix().length()))
-        .build();
-  }
 }

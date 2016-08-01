@@ -7,4 +7,6 @@ public interface PlacesDatasource {
   Observable<List<FoursquarePlace>> getPlaces(double latitude, double longitude);
 
   Observable<List<FoursquarePlace>> getPlaces(double latitude, double longitude, int offset);
+
+  Observable<FoursquarePlace> getPlace(String id);
 }

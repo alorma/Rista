@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.alorma.rista.R;
 import com.alorma.rista.domain.places.FoursquarePlace;
 import com.alorma.rista.ui.utils.FoursquarePhotosHelper;
-import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.varunest.sparkbutton.SparkButton;
@@ -37,12 +36,8 @@ public class PlacesAdapter extends RecyclerArrayAdapter<FoursquarePlace, PlacesA
   @Override
   protected void onBindViewHolder(PlaceHolder holder, FoursquarePlace foursquarePlace) {
     Uri uri = foursquarePhotosHelper.buildPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
-    Uri thumbnailUri =
-        foursquarePhotosHelper.buildThumbnailPhoto(foursquarePlace.getVenue().getPhotos().getGroups().get(0).getItems().get(0));
 
-    DrawableRequestBuilder<Uri> thumbnail = glide.load(thumbnailUri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE);
-
-    glide.load(uri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.SOURCE).thumbnail(thumbnail).into(holder.imageView);
+    glide.load(uri).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.imageView);
 
     holder.textView.setText(foursquarePlace.getVenue().getName());
     if (favorites != null) {

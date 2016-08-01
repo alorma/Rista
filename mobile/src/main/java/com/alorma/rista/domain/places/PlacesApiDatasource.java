@@ -23,11 +23,11 @@ public class PlacesApiDatasource implements PlacesDatasource {
   }
 
   @NonNull
-  private Observable<FoursquareExploreResponse> getResponse(double latitude, double longitude, int offset) {
+  private Observable<FoursquareExplorePlacesResponse> getResponse(double latitude, double longitude, int offset) {
     String ll = latitude + "," + longitude;
-    Call<FoursquareExploreResponse> call = restProvider.getService().getPlaces(ll, "food", "restaurant", offset);
+    Call<FoursquareExplorePlacesResponse> call = restProvider.getService().getPlaces(ll, "food", "restaurant", offset);
     try {
-      Response<FoursquareExploreResponse> response = call.execute();
+      Response<FoursquareExplorePlacesResponse> response = call.execute();
       if (response.isSuccessful()) {
         return Observable.just(response.body());
       } else {
@@ -43,10 +43,15 @@ public class PlacesApiDatasource implements PlacesDatasource {
     return getDefer(latitude, longitude, offset);
   }
 
+  @Override
+  public Observable<FoursquarePlace> getPlace(String id) {
+    return null;
+  }
+
   @NonNull
   private Observable<List<FoursquarePlace>> getDefer(double latitude, double longitude, int offset) {
-    return Observable.defer(() -> getResponse(latitude, longitude, offset).map(FoursquareExploreResponse::getResponse)
-        .map(ExploreResponse::getGroups)
+    return Observable.defer(() -> getResponse(latitude, longitude, offset).map(FoursquareExplorePlacesResponse::getResponse)
+        .map(ExplorePlacesResponse::getGroups)
         .flatMap(Observable::from)
         .map(ExploreGroupsResponse::getItems));
   }

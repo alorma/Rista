@@ -9,44 +9,28 @@
     tools:context="com.alorma.rista.ui.activity.RestaurantActivity"
     >
 
-  <android.support.design.widget.AppBarLayout
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
+  <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="280dp"
-      android:background="@android:color/transparent"
-      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-      app:popupTheme="@style/ThemeOverlay.AppCompat"
+      android:orientation="vertical"
       tools:showIn="@layout/activity_places"
       android:fitsSystemWindows="true"
+      android:id="@+id/appbar_layout"
       >
-    <android.support.design.widget.CollapsingToolbarLayout
-        android:id="@+id/toolbar_layout"
-        android:fitsSystemWindows="true"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-        app:contentScrim="?attr/colorPrimary"
-        >
-      <ImageView
-          android:layout_width="match_parent"
-          android:layout_height="280dp"
-          android:id="@+id/image"
-          android:scaleType="centerCrop"
-          app:layout_collapseMode="parallax"
-          android:transitionName="@string/transition_restaurant_photo"
-          />
-      <android.support.v7.widget.Toolbar
-          android:id="@+id/toolbar"
-          android:layout_height="?attr/actionBarSize"
-          android:layout_width="match_parent"
-          app:layout_collapseMode="pin"
-          app:popupTheme="@style/AppTheme.PopupOverlay"
-          />
-
-    </android.support.design.widget.CollapsingToolbarLayout>
-  </android.support.design.widget.AppBarLayout>
+        app:popupTheme="@style/AppTheme.PopupOverlay"
+        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="224dp"
+        android:id="@+id/image"
+        android:scaleType="centerCrop"
+        android:transitionName="@string/transition_restaurant_photo"
+        />
+  </LinearLayout>
   <android.support.v4.widget.NestedScrollView
       android:layout_width="match_parent"
       android:layout_height="1000dp"

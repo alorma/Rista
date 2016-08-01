@@ -13,6 +13,10 @@ public class FoursquarePlace {
     venue = new FoursquarePlaceVenue(id, name, photos);
   }
 
+  public FoursquarePlace(FoursquarePlaceVenue venue) {
+    this.venue = venue;
+  }
+
   public FoursquarePlaceVenue getVenue() {
     return venue;
   }

@@ -18,4 +18,8 @@ public class PlacesRepository {
   public Observable<List<FoursquarePlace>> getPlaces(double latitude, double longitude, int offset) {
     return placesApi.getPlaces(latitude, longitude, offset);
   }
+
+  public Observable<FoursquarePlace> getPlace(String placeId) {
+    return placesApi.getPlace(placeId);
+  }
 }
